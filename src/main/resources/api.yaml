@@ -1,0 +1,119 @@
+openapi: 3.0.3
+
+info:
+  title: Booking System API
+  version: 1.0.0
+  description: API for managing bookings in a small business system.
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Bookings
+    description: Operations related to service bookings
+
+paths:
+  /bookings:
+    post:
+      tags:
+        - Bookings
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+      responses:
+        '201':
+          description: Booking created
+
+    get:
+      tags:
+        - Bookings
+      summary: Retrieve all bookings
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '204':
+          description: No bookings found
+
+  /bookings/{id}:
+    get:
+      tags:
+        - Bookings
+      summary: Retrieve booking by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+
+    delete:
+      tags:
+        - Bookings
+      summary: Delete a booking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Booking deleted
+
+components:
+  schemas:
+    BookingCreate:
+      type: object
+      required:
+        - date_time
+        - service_id
+        - user_id
+      properties:
+        date_time:
+          type: string
+          format: date-time
+        service_id:
+          type: string
+        user_id:
+          type: string
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+        date_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [PENDING, CONFIRMED, CANCELLED]
+        service_id:
+          type: string
+        user_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
