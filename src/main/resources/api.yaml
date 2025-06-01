@@ -1,17 +1,25 @@
 openapi: 3.0.3
-
 info:
-  title: Booking System API
+  title: Small Business Booking System API
   version: 1.0.0
-  description: API for managing bookings in a small business system.
-
+  description: API for managing users, bookings, services, businesses, notifications, and authentication.
 servers:
   - url: http://localhost:8080
-
 tags:
   - name: Bookings
     description: Operations related to service bookings
-
+  - name: Users
+    description: Operations related to system users (registration, profile, admin view)
+  - name: Businesses
+    description: Operations related to managing user-owned businesses
+  - name: Services
+    description: Operations related to services provided by businesses
+  - name: Notifications
+    description: Operations related to sending and retrieving user notifications
+  - name: Auth
+    description: Authentication operations for user login and registration
+  - name: Passwords
+    description: Password management for authenticated users
 paths:
   /bookings:
     post:
@@ -27,7 +35,6 @@ paths:
       responses:
         '201':
           description: Booking created
-
     get:
       tags:
         - Bookings
@@ -64,7 +71,34 @@ paths:
                 $ref: '#/components/schemas/Booking'
         '404':
           description: Booking not found
-
+    put:
+      tags:
+        - Bookings
+      summary: Update booking status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - CONFIRMED
+                    - CANCELLED
+      responses:
+        '200':
+          description: Booking status updated
+        '404':
+          description: Booking not found
     delete:
       tags:
         - Bookings
@@ -79,7 +113,435 @@ paths:
         '204':
           description: Booking deleted
 
+  /bookings/{id}/accept:
+    put:
+      tags:
+        - Bookings
+      summary: Accept a booking (set status to CONFIRMED)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booking accepted (status = CONFIRMED)
+        '404':
+          description: Booking not found
+
+  /bookings/{id}/cancel:
+    put:
+      tags:
+        - Bookings
+      summary: Cancel a booking (set status to CANCELLED)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booking cancelled (status = CANCELLED)
+        '404':
+          description: Booking not found
+
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created
+    get:
+      tags:
+        - Users
+      summary: Retrieve all users (admin only)
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '204':
+          description: No users found
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Retrieve user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    put:
+      tags:
+        - Users
+      summary: Update user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - Users
+      summary: Delete user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted
+        '404':
+          description: User not found
+
+  /businesses:
+    post:
+      tags:
+        - Businesses
+      summary: Create a new business
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessCreate'
+      responses:
+        '201':
+          description: Business created
+    get:
+      tags:
+        - Businesses
+      summary: Retrieve all businesses
+      responses:
+        '200':
+          description: List of businesses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Business'
+        '204':
+          description: No businesses found
+
+  /businesses/{id}:
+    get:
+      tags:
+        - Businesses
+      summary: Retrieve a business by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Business details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '404':
+          description: Business not found
+    put:
+      tags:
+        - Businesses
+      summary: Update a business by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessUpdate'
+      responses:
+        '200':
+          description: Business updated
+        '404':
+          description: Business not found
+    delete:
+      tags:
+        - Businesses
+      summary: Delete a business by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Business deleted
+        '404':
+          description: Business not found
+
+  /services:
+    post:
+      tags:
+        - Services
+      summary: Create a new service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreate'
+      responses:
+        '201':
+          description: Service created
+    get:
+      tags:
+        - Services
+      summary: Retrieve all services
+      responses:
+        '200':
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+        '204':
+          description: No services found
+
+  /services/{id}:
+    get:
+      tags:
+        - Services
+      summary: Retrieve a service by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Service details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '404':
+          description: Service not found
+    put:
+      tags:
+        - Services
+      summary: Update a service by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdate'
+      responses:
+        '200':
+          description: Service updated
+        '404':
+          description: Service not found
+    delete:
+      tags:
+        - Services
+      summary: Delete a service by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Service deleted
+        '404':
+          description: Service not found
+
+  /notifications:
+    post:
+      tags:
+        - Notifications
+      summary: Create and send a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationCreate'
+      responses:
+        '201':
+          description: Notification created and sent
+    get:
+      tags:
+        - Notifications
+      summary: Retrieve all notifications
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '204':
+          description: No notifications found
+
+  /notifications/{id}:
+    get:
+      tags:
+        - Notifications
+      summary: Retrieve notification by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '404':
+          description: Notification not found
+    delete:
+      tags:
+        - Notifications
+      summary: Delete notification by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Notification deleted
+        '404':
+          description: Notification not found
+
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRegister'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '400':
+          description: Invalid registration data
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLogin'
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '401':
+          description: Invalid credentials
+
+  /passwords/reset:
+    post:
+      tags:
+        - Passwords
+      summary: Request password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Password reset email sent
+        '404':
+          description: User not found
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     BookingCreate:
       type: object
@@ -95,7 +557,6 @@ components:
           type: string
         user_id:
           type: string
-
     Booking:
       type: object
       properties:
@@ -106,7 +567,10 @@ components:
           format: date-time
         status:
           type: string
-          enum: [PENDING, CONFIRMED, CANCELLED]
+          enum:
+            - PENDING
+            - CONFIRMED
+            - CANCELLED
         service_id:
           type: string
         user_id:
@@ -115,5 +579,207 @@ components:
           type: string
           format: date-time
         updated_at:
+          type: string
+          format: date-time
+    UserCreate:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+    UserUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AuthRegister:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+    AuthLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    AuthToken:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+    BusinessCreate:
+      type: object
+      required:
+        - business_name
+        - description
+        - user_id
+      properties:
+        business_name:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: string
+    BusinessUpdate:
+      type: object
+      properties:
+        business_name:
+          type: string
+        description:
+          type: string
+    Business:
+      type: object
+      properties:
+        id:
+          type: string
+        business_name:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ServiceCreate:
+      type: object
+      required:
+        - name
+        - description
+        - duration_minutes
+        - price_eur
+        - business_id
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        duration_minutes:
+          type: integer
+        price_eur:
+          type: number
+          format: float
+        business_id:
+          type: string
+    ServiceUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        duration_minutes:
+          type: integer
+        price_eur:
+          type: number
+          format: float
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        duration_minutes:
+          type: integer
+        price_eur:
+          type: number
+        business_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    NotificationCreate:
+      type: object
+      required:
+        - recipient_id
+        - message
+        - type
+      properties:
+        recipient_id:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum:
+            - EMAIL
+            - SMS
+            - PUSH
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        recipient_id:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum:
+            - EMAIL
+            - SMS
+            - PUSH
+        sent_at:
           type: string
           format: date-time
