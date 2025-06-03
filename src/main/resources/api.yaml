@@ -26,6 +26,7 @@ paths:
       tags:
         - Bookings
       summary: Create a new booking
+      security: [ { bearerAuth: [ ] } ]
       requestBody:
         required: true
         content:
@@ -39,6 +40,7 @@ paths:
       tags:
         - Bookings
       summary: Retrieve all bookings
+      security: [ { bearerAuth: [ ] } ]
       responses:
         '200':
           description: A list of bookings
@@ -56,6 +58,7 @@ paths:
       tags:
         - Bookings
       summary: Retrieve booking by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -75,6 +78,7 @@ paths:
       tags:
         - Bookings
       summary: Update booking status
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -103,6 +107,7 @@ paths:
       tags:
         - Bookings
       summary: Delete a booking
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -118,6 +123,7 @@ paths:
       tags:
         - Bookings
       summary: Accept a booking (set status to CONFIRMED)
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -135,6 +141,7 @@ paths:
       tags:
         - Bookings
       summary: Cancel a booking (set status to CANCELLED)
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -152,6 +159,7 @@ paths:
       tags:
         - Users
       summary: Register a new user
+      security: [ { bearerAuth: [ ] } ]
       requestBody:
         required: true
         content:
@@ -165,6 +173,7 @@ paths:
       tags:
         - Users
       summary: Retrieve all users (admin only)
+      security: [ { bearerAuth: [ ] } ]
       responses:
         '200':
           description: List of users
@@ -182,6 +191,7 @@ paths:
       tags:
         - Users
       summary: Retrieve user by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -201,6 +211,7 @@ paths:
       tags:
         - Users
       summary: Update user by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -222,6 +233,7 @@ paths:
       tags:
         - Users
       summary: Delete user by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -239,6 +251,7 @@ paths:
       tags:
         - Businesses
       summary: Create a new business
+      security: [ { bearerAuth: [ ] } ]
       requestBody:
         required: true
         content:
@@ -252,6 +265,7 @@ paths:
       tags:
         - Businesses
       summary: Retrieve all businesses
+      security: [ { bearerAuth: [ ] } ]
       responses:
         '200':
           description: List of businesses
@@ -269,6 +283,7 @@ paths:
       tags:
         - Businesses
       summary: Retrieve a business by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -288,6 +303,7 @@ paths:
       tags:
         - Businesses
       summary: Update a business by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -309,6 +325,7 @@ paths:
       tags:
         - Businesses
       summary: Delete a business by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -326,6 +343,7 @@ paths:
       tags:
         - Services
       summary: Create a new service
+      security: [ { bearerAuth: [ ] } ]
       requestBody:
         required: true
         content:
@@ -339,6 +357,7 @@ paths:
       tags:
         - Services
       summary: Retrieve all services
+      security: [ { bearerAuth: [ ] } ]
       responses:
         '200':
           description: List of services
@@ -356,6 +375,7 @@ paths:
       tags:
         - Services
       summary: Retrieve a service by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -375,6 +395,7 @@ paths:
       tags:
         - Services
       summary: Update a service by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -396,6 +417,7 @@ paths:
       tags:
         - Services
       summary: Delete a service by ID
+      security: [ { bearerAuth: [ ] } ]
       parameters:
         - in: path
           name: id
@@ -413,6 +435,7 @@ paths:
       tags:
         - Notifications
       summary: Create and send a notification
+      security: [ { bearerAuth: [ ] } ]
       requestBody:
         required: true
         content:
@@ -422,57 +445,6 @@ paths:
       responses:
         '201':
           description: Notification created and sent
-    get:
-      tags:
-        - Notifications
-      summary: Retrieve all notifications
-      responses:
-        '200':
-          description: List of notifications
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Notification'
-        '204':
-          description: No notifications found
-
-  /notifications/{id}:
-    get:
-      tags:
-        - Notifications
-      summary: Retrieve notification by ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Notification details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Notification'
-        '404':
-          description: Notification not found
-    delete:
-      tags:
-        - Notifications
-      summary: Delete notification by ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Notification deleted
-        '404':
-          description: Notification not found
 
   /auth/register:
     post:
