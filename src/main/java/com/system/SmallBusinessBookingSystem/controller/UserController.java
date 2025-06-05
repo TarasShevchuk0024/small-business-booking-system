@@ -32,24 +32,24 @@ public class UserController {
         UserDetailsDto taras = new UserDetailsDto(
                 "Taras", "Shevchuk", "taras.shevchuk0024@gmail.com",
                 "+380633570183", "ADMIN", "ACTIVE");
-        return new ResponseEntity<>(taras,HttpStatus.OK);
+        return new ResponseEntity<>(taras, HttpStatus.OK);
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         log.info("Creating new user");
         log.info("User created: {}", userRegistrationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
         log.info("Updating user");
         log.info("User updating: {}", userUpdateDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         log.info("Deleting user with id: {}", id);
         return new ResponseEntity<>(HttpStatus.OK);
