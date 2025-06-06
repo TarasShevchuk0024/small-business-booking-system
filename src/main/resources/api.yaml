@@ -6,20 +6,20 @@ info:
 servers:
   - url: http://localhost:8080
 tags:
-  - name: Bookings
-    description: Operations related to service bookings
   - name: Users
     description: Operations related to system users (registration, profile, admin view)
   - name: Businesses
     description: Operations related to managing user-owned businesses
   - name: Services
     description: Operations related to services provided by businesses
+  - name: Bookings
+    description: Operations related to service bookings
   - name: Notifications
     description: Operations related to sending and retrieving user notifications
   - name: Auth
-    description: Authentication operations for user login and registration
+    description: Authentication
   - name: Passwords
-    description: Password management for authenticated users
+    description: Password management
 paths:
   /bookings:
     post:
@@ -446,52 +446,84 @@ paths:
         '201':
           description: Notification created and sent
 
-  /auth/register:
+  /admins/users/login:
     post:
-      tags:
-        - Auth
-      summary: Register a new user
+      tags: [ Auth ]
+      summary: Admin/Users login
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthRegister'
-      responses:
-        '201':
-          description: User registered successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthToken'
-        '400':
-          description: Invalid registration data
-
-  /auth/login:
-    post:
-      tags:
-        - Auth
-      summary: Log in a user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthLogin'
+              $ref: '#/components/schemas/AuthCredentials'
       responses:
         '200':
-          description: User logged in successfully
+          description: JWT token
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthToken'
         '401':
-          description: Invalid credentials
+          description: Wrong credentials
 
-  /passwords/reset:
+  /admins/users/confirm-registration:
+    get:
+      tags: [ Auth ]
+      summary: Confirm registration
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '301':
+          description: Redirect to complete registration page
+        '401':
+          description: Invalid token
+
+  /admins/users/complete-registration:
     post:
-      tags:
-        - Passwords
+      tags: [ Auth ]
+      summary: Complete registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Registration completed
+
+  /admins/users/passwords:
+    put:
+      tags: [ Passwords ]
+      summary: Change own password
+      security: [ { bearerAuth: [ ] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                new_password:
+                  type: string
+      responses:
+        '200':
+          description: Password changed
+        '403':
+          description: Unauthorized
+
+  /admins/users/passwords/reset:
+    put:
+      tags: [ Passwords ]
       summary: Request password reset
       requestBody:
         required: true
@@ -505,34 +537,55 @@ paths:
       responses:
         '200':
           description: Password reset email sent
-        '404':
-          description: User not found
+
+  /admins/users/passwords/reset-verify:
+    get:
+      tags: [ Passwords ]
+      summary: Verify password reset token
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '301':
+          description: Redirect to new password UI
+
+  /admins/users/passwords/reset-complete:
+    post:
+      tags: [ Passwords ]
+      summary: Complete password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Password reset complete
 
 components:
+
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   schemas:
     BookingCreate:
       type: object
-      required:
-        - date_time
-        - service_id
-        - user_id
       properties:
-        date_time:
-          type: string
-          format: date-time
-        service_id:
+        id:
           type: string
         user_id:
           type: string
-    Booking:
-      type: object
-      properties:
-        id:
+        service_id:
           type: string
         date_time:
           type: string
@@ -543,10 +596,27 @@ components:
             - PENDING
             - CONFIRMED
             - CANCELLED
-        service_id:
+        created_at:
+          type: string
+          format: date-time
+    Booking:
+      type: object
+      properties:
+        id:
           type: string
         user_id:
           type: string
+        service_id:
+          type: string
+        date_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - PENDING
+            - CONFIRMED
+            - CANCELLED
         created_at:
           type: string
           format: date-time
@@ -555,100 +625,111 @@ components:
           format: date-time
     UserCreate:
       type: object
-      required:
-        - email
-        - password
-        - name
       properties:
+        id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
         email:
           type: string
-        password:
+        phone_number:
           type: string
-        name:
-          type: string
-        role:
+        type:
           type: string
           enum:
             - ADMIN
             - USER
+        created_at:
+          type: string
+          format: date-time
     UserUpdate:
       type: object
       properties:
+        id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
         email:
           type: string
-        name:
+        phone_number:
           type: string
-        role:
+        password:
+          type: string
+        type:
           type: string
           enum:
             - ADMIN
             - USER
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - BLOCKED
+            - PENDING
+        updated_at:
+          type: string
+          format: date-time
     User:
       type: object
       properties:
         id:
           type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
         email:
           type: string
-        name:
+        phone_number:
           type: string
-        role:
+        type:
           type: string
+          enum:
+            - ADMIN
+            - USER
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - BLOCKED
+            - PENDING
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-    AuthRegister:
-      type: object
-      required:
-        - email
-        - password
-        - name
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-        name:
-          type: string
-    AuthLogin:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-    AuthToken:
-      type: object
-      required:
-        - token
-      properties:
-        token:
-          type: string
     BusinessCreate:
       type: object
-      required:
-        - business_name
-        - description
-        - user_id
       properties:
+        id:
+          type: string
         business_name:
           type: string
         description:
           type: string
+        created_at:
+          type: string
+          format: date-time
         user_id:
           type: string
     BusinessUpdate:
       type: object
       properties:
+        id:
+          type: string
         business_name:
           type: string
         description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        user_id:
           type: string
     Business:
       type: object
@@ -659,24 +740,20 @@ components:
           type: string
         description:
           type: string
-        user_id:
-          type: string
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+        user_id:
+          type: string
     ServiceCreate:
       type: object
-      required:
-        - name
-        - description
-        - duration_minutes
-        - price_eur
-        - business_id
       properties:
-        name:
+        id:
+          type: string
+        service_name:
           type: string
         description:
           type: string
@@ -685,12 +762,17 @@ components:
         price_eur:
           type: number
           format: float
+        created_at:
+          type: string
+          format: date-time
         business_id:
           type: string
     ServiceUpdate:
       type: object
       properties:
-        name:
+        id:
+          type: string
+        service_name:
           type: string
         description:
           type: string
@@ -699,12 +781,17 @@ components:
         price_eur:
           type: number
           format: float
+        updated_at:
+          type: string
+          format: date-time
+        business_id:
+          type: string
     Service:
       type: object
       properties:
         id:
           type: string
-        name:
+        service_name:
           type: string
         description:
           type: string
@@ -712,46 +799,54 @@ components:
           type: integer
         price_eur:
           type: number
-        business_id:
-          type: string
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+        business_id:
+          type: string
     NotificationCreate:
-      type: object
-      required:
-        - recipient_id
-        - message
-        - type
-      properties:
-        recipient_id:
-          type: string
-        message:
-          type: string
-        type:
-          type: string
-          enum:
-            - EMAIL
-            - SMS
-            - PUSH
-    Notification:
       type: object
       properties:
         id:
           type: string
-        recipient_id:
-          type: string
         message:
           type: string
+        sent_at:
+          type: string
+          format: date-time
         type:
           type: string
           enum:
             - EMAIL
             - SMS
             - PUSH
-        sent_at:
+        user_id:
           type: string
-          format: date-time
+        booking_id:
+          type: string
+
+    AuthCredentials:
+      type: object
+      required: [ email, password ]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    AuthToken:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          minLength: 1
+
+
+
+
+
