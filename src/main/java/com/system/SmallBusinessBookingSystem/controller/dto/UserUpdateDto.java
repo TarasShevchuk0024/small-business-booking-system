@@ -2,10 +2,12 @@ package com.system.SmallBusinessBookingSystem.controller.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Builder
 public class UserUpdateDto {
     private final Integer id;
     private final String firstName;

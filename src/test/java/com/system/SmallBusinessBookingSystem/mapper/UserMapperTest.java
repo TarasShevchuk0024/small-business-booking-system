@@ -1,11 +1,14 @@
 package com.system.SmallBusinessBookingSystem.mapper;
 
 import com.system.SmallBusinessBookingSystem.controller.dto.UserDetailsDto;
+import com.system.SmallBusinessBookingSystem.controller.dto.UserUpdateDto;
 import com.system.SmallBusinessBookingSystem.service.domain.User;
 import com.system.SmallBusinessBookingSystem.service.domain.UserStatus;
 import com.system.SmallBusinessBookingSystem.service.domain.UserType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.security.cert.Extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,6 +46,15 @@ class UserMapperTest {
         assertEquals(user.getStatus().name(), result.getStatus());
         assertEquals(user.getType().name(), result.getType());
     }
+
+
+
+
+
+
+
+
+
 
 }
 
