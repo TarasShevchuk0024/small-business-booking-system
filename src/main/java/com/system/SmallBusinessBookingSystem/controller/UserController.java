@@ -3,6 +3,7 @@ package com.system.SmallBusinessBookingSystem.controller;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserDetailsDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserRegistrationDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserUpdateDto;
+import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
 import com.system.SmallBusinessBookingSystem.mapper.UserMapper;
 import com.system.SmallBusinessBookingSystem.service.UserService;
 import com.system.SmallBusinessBookingSystem.service.domain.User;
@@ -57,8 +58,13 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        log.info("Deleting user with id: {}", id);
+        userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Void> handleUserNotFoundException(UserNotFoundException e) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
