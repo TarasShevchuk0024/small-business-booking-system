@@ -25,7 +25,7 @@ class UserMapperTest {
     void shouldMapAdminToAdminDetails() {
         // given
         User user = User.builder()
-                .id(123)
+                .id("123")
                 .firstName("Taras")
                 .lastName("Shevchuk")
                 .email("taras.shevchuk0024@gmail.com")

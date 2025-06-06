@@ -37,6 +37,7 @@ public class UserMapper {
 
     public User toUser(UserUpdateDto userDetailsDto) {
         return User.builder()
+                .id(userDetailsDto.getId())
                 .firstName(userDetailsDto.getFirstName())
                 .lastName(userDetailsDto.getLastName())
                 .email(userDetailsDto.getEmail())
