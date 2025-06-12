@@ -2,6 +2,13 @@ spring:
   application:
     name: small_business_booking_system
 
+
+  jpa:
+    properties:
+      hibernate:
+       globally_quoted_identifiers: true
+
+
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:5432}/${DATABASE_NAME:small_business_booking_system}
     username: ${DATABASE_USER:postgres}

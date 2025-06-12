@@ -3,4 +3,4 @@
 --changeset taras.shevchuk:3
 
 
-ALTER TABLE "Users" ALTER column "password" DROP NOT NULL;
+ALTER TABLE users ADD COLUMN status VARCHAR(16);
