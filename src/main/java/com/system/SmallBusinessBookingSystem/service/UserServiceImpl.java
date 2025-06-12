@@ -1,11 +1,15 @@
 package com.system.SmallBusinessBookingSystem.service;
 
 import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
+import com.system.SmallBusinessBookingSystem.mapper.UserMapper;
+import com.system.SmallBusinessBookingSystem.repository.UserRepository;
 import com.system.SmallBusinessBookingSystem.service.domain.User;
 import com.system.SmallBusinessBookingSystem.service.domain.UserStatus;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +17,22 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
     private Map<String, User> userMap = new HashMap<>();
 
     @Override
     public void createUser(User user) {
         log.info("Creating new user");
 
-        user.setId(UUID.randomUUID().toString());
         user.setStatus(UserStatus.PENDING);
-        userMap.put(user.getId(), user);
+        user.setCreatedAt(Instant.now());
+
+        userRepository.save(userMapper.toUserEntity(user));
 
         log.info("User created: {}", user);
 
@@ -56,10 +66,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String id) {
-        if (userMap.containsKey(id)) {
-            log.info("Deleting user with id: {}", id);
-            userMap.remove(id);
-            log.info("User deleted: {}", id);
+        if (userRepository.existsById(UUID.fromString(id))) {
+            userRepository.deleteById(UUID.fromString(id));
         } else {
             throw new UserNotFoundException("User with id " + id + " not found");
         }
