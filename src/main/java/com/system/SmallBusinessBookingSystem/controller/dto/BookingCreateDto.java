@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -13,6 +13,5 @@ import java.time.LocalDateTime;
 public class BookingCreateDto {
     private final String userId;
     private final String serviceId;
-    private final LocalDateTime dateTime;
-    private final String status;
+    private final Instant dateTime;
 }

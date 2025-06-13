@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class NotificationCreateDto {
     private final String message;
-    private final LocalDateTime sentAt;
+    private final Instant sentAt;
     private final String type;
 }
