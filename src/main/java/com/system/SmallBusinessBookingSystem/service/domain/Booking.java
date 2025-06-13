@@ -11,6 +11,8 @@ import java.time.Instant;
 @ToString
 public class Booking {
     private String id;
+    private String userId;
+    private String serviceId;
     private Instant dateTime;
     private String status;
     private Instant createdAt;
