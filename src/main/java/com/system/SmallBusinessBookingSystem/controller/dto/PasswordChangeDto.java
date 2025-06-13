@@ -10,5 +10,5 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PasswordChangeDto {
     private final String oldPassword;
-    private String newPassword;
+    private final String newPassword;
 }
