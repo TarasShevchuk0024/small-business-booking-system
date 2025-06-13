@@ -9,15 +9,11 @@ import java.time.Instant;
 @AllArgsConstructor
 @Builder
 @ToString
-public class User {
+public class Notification {
     private String id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
-    private String password;
-    private UserType type;
-    private UserStatus status;
+    private String message;
+    private Instant sentAt;
+    private String type;
     private Instant createdAt;
     private Instant updatedAt;
 }
