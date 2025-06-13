@@ -9,15 +9,10 @@ import java.time.Instant;
 @AllArgsConstructor
 @Builder
 @ToString
-public class User {
+public class Booking {
     private String id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
-    private String password;
-    private UserType type;
-    private UserStatus status;
+    private Instant dateTime;
+    private String status;
     private Instant createdAt;
     private Instant updatedAt;
 }
