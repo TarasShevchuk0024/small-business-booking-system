@@ -4,5 +4,15 @@ databaseChangeLog:
       relativeToChangelogFile: true
 
   - include:
-      file: 002-add-default-user.sql
+      file: 002-rename-users.sql
       relativeToChangelogFile: true
+
+  - include:
+      file: 003-add-status.sql
+      relativeToChangelogFile: true
+
+
+  - include:
+      file: 004-rename-tables.sql
+      relativeToChangelogFile: true
+
