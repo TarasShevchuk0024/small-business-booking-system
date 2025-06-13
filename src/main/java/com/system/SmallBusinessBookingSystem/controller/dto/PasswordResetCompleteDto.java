@@ -9,5 +9,5 @@ import lombok.Data;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PasswordResetCompleteDto {
-    private String password;
+    private final String password;
 }
