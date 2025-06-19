@@ -55,4 +55,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<NotificationsEntity> notifications;
+
+    @Column
+    private UUID token;
 }

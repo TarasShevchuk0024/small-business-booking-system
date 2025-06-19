@@ -3,17 +3,20 @@ package com.system.SmallBusinessBookingSystem.controller;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserDetailsDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserRegistrationDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserUpdateDto;
-import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
 import com.system.SmallBusinessBookingSystem.mapper.UserMapper;
-import com.system.SmallBusinessBookingSystem.service.UserService;
-import com.system.SmallBusinessBookingSystem.service.domain.User;
+import com.system.SmallBusinessBookingSystem.service.models.User;
+import com.system.SmallBusinessBookingSystem.service.models.UserType;
+import com.system.SmallBusinessBookingSystem.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.system.SmallBusinessBookingSystem.service.models.UserType.ROLE_ADMIN;
 
 @Slf4j
 @RestController
@@ -45,6 +48,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Secured(UserType.UserTypeConstants.ADMIN)
     public ResponseEntity<Void> createUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         userService.createUser(userMapper.toUser(userRegistrationDto));
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -52,19 +56,48 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
-        userService.updateUser(userMapper.toUser(userUpdateDto));
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        User authenticatedUser = userService.getAuthenticatedUser();
+
+        if (authenticatedUser.getType() == ROLE_ADMIN ||
+                authenticatedUser.getId().equals(userUpdateDto.getId())) {
+            userService.updateUser(userMapper.toUser(userUpdateDto));
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping("/{id}")
+    @Secured(UserType.UserTypeConstants.ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Void> handleUserNotFoundException(UserNotFoundException e) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

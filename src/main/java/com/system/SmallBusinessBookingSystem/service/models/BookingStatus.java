@@ -1,4 +1,4 @@
-package com.system.SmallBusinessBookingSystem.service.domain;
+package com.system.SmallBusinessBookingSystem.service.models;
 
 public enum BookingStatus {
     PENDING,
