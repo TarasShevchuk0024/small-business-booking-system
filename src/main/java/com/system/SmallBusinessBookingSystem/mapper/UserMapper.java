@@ -4,9 +4,9 @@ import com.system.SmallBusinessBookingSystem.controller.dto.UserDetailsDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserRegistrationDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.UserUpdateDto;
 import com.system.SmallBusinessBookingSystem.repository.entity.UserEntity;
-import com.system.SmallBusinessBookingSystem.service.domain.User;
-import com.system.SmallBusinessBookingSystem.service.domain.UserStatus;
-import com.system.SmallBusinessBookingSystem.service.domain.UserType;
+import com.system.SmallBusinessBookingSystem.service.models.User;
+import com.system.SmallBusinessBookingSystem.service.models.UserStatus;
+import com.system.SmallBusinessBookingSystem.service.models.UserType;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -35,7 +35,8 @@ public class UserMapper {
                 .lastName(userRegistrationDto.getLastName())
                 .email(userRegistrationDto.getEmail())
                 .phoneNumber(userRegistrationDto.getPhoneNumber())
-                .type(UserType.valueOf(userRegistrationDto.getType()))
+                .password(userRegistrationDto.getPassword())
+                .type(UserType.fromValue(userRegistrationDto.getType()))
                 .build();
 
     }
@@ -47,7 +48,7 @@ public class UserMapper {
                 .lastName(userDetailsDto.getLastName())
                 .email(userDetailsDto.getEmail())
                 .phoneNumber(userDetailsDto.getPhoneNumber())
-                .type(UserType.valueOf(userDetailsDto.getType()))
+                .type(UserType.fromValue(userDetailsDto.getType()))
                 .status(UserStatus.valueOf(userDetailsDto.getStatus()))
                 .build();
     }
@@ -59,10 +60,11 @@ public class UserMapper {
                 .lastName(userEntity.getLastName())
                 .email(userEntity.getEmail())
                 .phoneNumber(userEntity.getPhoneNumber())
-                .type(UserType.valueOf(userEntity.getType()))
+                .type(UserType.fromValue(userEntity.getType()))
                 .status(UserStatus.valueOf(userEntity.getStatus()))
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
+                .password(userEntity.getPassword())
                 .build();
     }
 
@@ -77,6 +79,8 @@ public class UserMapper {
                 .type(user.getType().name())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .token(user.getToken())
+                .password(user.getPassword())
                 .build();
     }
 

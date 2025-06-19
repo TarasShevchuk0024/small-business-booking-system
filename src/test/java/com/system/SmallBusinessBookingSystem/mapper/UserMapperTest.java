@@ -1,14 +1,11 @@
 package com.system.SmallBusinessBookingSystem.mapper;
 
 import com.system.SmallBusinessBookingSystem.controller.dto.UserDetailsDto;
-import com.system.SmallBusinessBookingSystem.controller.dto.UserUpdateDto;
-import com.system.SmallBusinessBookingSystem.service.domain.User;
-import com.system.SmallBusinessBookingSystem.service.domain.UserStatus;
-import com.system.SmallBusinessBookingSystem.service.domain.UserType;
+import com.system.SmallBusinessBookingSystem.service.models.User;
+import com.system.SmallBusinessBookingSystem.service.models.UserStatus;
+import com.system.SmallBusinessBookingSystem.service.models.UserType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.security.cert.Extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,7 +28,7 @@ class UserMapperTest {
                 .email("taras.shevchuk0024@gmail.com")
                 .phoneNumber("+380634567645")
                 .status(UserStatus.ACTIVE)
-                .type(UserType.ADMIN)
+                .type(UserType.ROLE_ADMIN)
                 .build();
 
         // when
