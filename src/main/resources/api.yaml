@@ -446,7 +446,7 @@ paths:
         '201':
           description: Notification created and sent
 
-  /admins/users/login:
+  /users/login:
     post:
       tags: [ Auth ]
       summary: Admin/Users login
@@ -466,40 +466,25 @@ paths:
         '401':
           description: Wrong credentials
 
-  /admins/users/confirm-registration:
-    get:
-      tags: [ Auth ]
-      summary: Confirm registration
-      parameters:
-        - name: token
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '301':
-          description: Redirect to complete registration page
-        '401':
-          description: Invalid token
 
-  /admins/users/complete-registration:
+  /users/sign-up:
     post:
       tags: [ Auth ]
-      summary: Complete registration
+      summary: Registration
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                password:
-                  type: string
+              $ref: '#/components/schemas/UserCreate'
       responses:
         '200':
           description: Registration completed
-
-  /admins/users/passwords:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+  /users/passwords:
     put:
       tags: [ Passwords ]
       summary: Change own password
@@ -521,7 +506,7 @@ paths:
         '403':
           description: Unauthorized
 
-  /admins/users/passwords/reset:
+  /users/passwords/reset:
     put:
       tags: [ Passwords ]
       summary: Request password reset
@@ -538,7 +523,7 @@ paths:
         '200':
           description: Password reset email sent
 
-  /admins/users/passwords/reset-verify:
+  /users/passwords/reset-verify:
     get:
       tags: [ Passwords ]
       summary: Verify password reset token
@@ -549,10 +534,14 @@ paths:
           schema:
             type: string
       responses:
-        '301':
-          description: Redirect to new password UI
+        '201':
+          description: Should open a new password UI after success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 
-  /admins/users/passwords/reset-complete:
+  /users/passwords/reset-complete:
     post:
       tags: [ Passwords ]
       summary: Complete password reset
@@ -561,10 +550,8 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                password:
-                  type: string
+              $ref: '#/components/schemas/PasswordResetComplete'
+
       responses:
         '200':
           description: Password reset complete
@@ -586,15 +573,6 @@ components:
         service_id:
           type: string
         date_time:
-          type: string
-          format: date-time
-        status:
-          type: string
-          enum:
-            - PENDING
-            - CONFIRMED
-            - CANCELLED
-        created_at:
           type: string
           format: date-time
     Booking:
@@ -632,14 +610,13 @@ components:
           type: string
         phone_number:
           type: string
+        password:
+          type: string
         type:
           type: string
           enum:
             - ADMIN
             - USER
-        created_at:
-          type: string
-          format: date-time
     UserUpdate:
       type: object
       properties:
@@ -664,9 +641,6 @@ components:
             - ACTIVE
             - BLOCKED
             - PENDING
-        updated_at:
-          type: string
-          format: date-time
     User:
       type: object
       properties:
@@ -691,12 +665,6 @@ components:
             - ACTIVE
             - BLOCKED
             - PENDING
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     BusinessCreate:
       type: object
       properties:
@@ -704,9 +672,6 @@ components:
           type: string
         description:
           type: string
-        created_at:
-          type: string
-          format: date-time
     BusinessUpdate:
       type: object
       properties:
@@ -716,9 +681,6 @@ components:
           type: string
         description:
           type: string
-        updated_at:
-          type: string
-          format: date-time
     Business:
       type: object
       properties:
@@ -734,8 +696,6 @@ components:
         updated_at:
           type: string
           format: date-time
-        user_id:
-          type: string
     ServiceCreate:
       type: object
       properties:
@@ -748,9 +708,6 @@ components:
         price_eur:
           type: number
           format: float
-        created_at:
-          type: string
-          format: date-time
     ServiceUpdate:
       type: object
       properties:
@@ -765,9 +722,6 @@ components:
         price_eur:
           type: number
           format: float
-        updated_at:
-          type: string
-          format: date-time
     Service:
       type: object
       properties:
@@ -787,8 +741,6 @@ components:
         updated_at:
           type: string
           format: date-time
-        business_id:
-          type: string
     NotificationCreate:
       type: object
       properties:
@@ -823,6 +775,10 @@ components:
           minLength: 1
 
 
-
-
-
+    PasswordResetComplete:
+      type: object
+      properties:
+        token:
+          type: string
+        password:
+          type: string

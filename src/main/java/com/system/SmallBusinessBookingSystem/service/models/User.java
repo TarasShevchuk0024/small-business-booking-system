@@ -1,8 +1,9 @@
-package com.system.SmallBusinessBookingSystem.service.domain;
+package com.system.SmallBusinessBookingSystem.service.models;
 
 import lombok.*;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -20,4 +21,5 @@ public class User {
     private UserStatus status;
     private Instant createdAt;
     private Instant updatedAt;
+    private UUID token;
 }
