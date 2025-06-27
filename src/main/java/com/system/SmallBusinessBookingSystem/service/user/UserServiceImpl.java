@@ -68,9 +68,9 @@ public class UserServiceImpl implements UserService {
         user.setCreatedAt(Instant.now());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        UserEntity registerdUserEntity = userRepository.save(userMapper.toUserEntity(user));
+        UserEntity registeredUserEntity = userRepository.save(userMapper.toUserEntity(user));
 
-        return tokenService.createToken(userMapper.toUser(registerdUserEntity));
+        return tokenService.createToken(userMapper.toUser(registeredUserEntity));
 
     }
 
