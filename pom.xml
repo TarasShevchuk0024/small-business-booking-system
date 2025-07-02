@@ -22,6 +22,7 @@
 		<lombok.version>1.18.38</lombok.version>
 		<liquibase-core.version>4.32.0</liquibase-core.version>
 		<jjwt-api.version>0.12.6</jjwt-api.version>
+		<mockito-core.version>5.18.0</mockito-core.version>
 	</properties>
 
 	<dependencies>
@@ -85,26 +86,34 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jjwt-api.version}</version>
 		</dependency>
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-core.version}</version>
+		</dependency>
     </dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<excludes>
-						<exclude>
+					<annotationProcessorPaths>
+						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>
