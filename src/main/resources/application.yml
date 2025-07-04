@@ -13,8 +13,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: taras.shevchuk0024@gmail.com
-    password: ${GMAIL_PASSWORD}
+    username: ${GMAIL_USERNAME:d159e3de-7f5b-4244-b989-0b34264c564a}
+    password: ${GMAIL_PASSWORD:7b2d3eea-0143-4ab1-b1d4-5a4f213d4692}
     properties:
       mail:
         smtp:
@@ -26,8 +26,9 @@ spring:
             trust: smtp.gmail.com
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:44af14bd-b032-40e1-9af8-0e5a0769fe2a}
   ttl-millis: 43200000 # 12 hours
 
 frontend:
-  base-url: ${FRONTEND_BASE_URL}
+  base-url: ${FRONTEND_BASE_URL:http://localhost:3000}
+

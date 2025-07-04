@@ -4,7 +4,9 @@ import com.system.SmallBusinessBookingSystem.controller.dto.UserDetailsDto;
 import com.system.SmallBusinessBookingSystem.service.models.User;
 import com.system.SmallBusinessBookingSystem.service.models.UserStatus;
 import com.system.SmallBusinessBookingSystem.service.models.UserType;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,16 +45,6 @@ class UserMapperTest {
         assertEquals(user.getStatus().name(), result.getStatus());
         assertEquals(user.getType().name(), result.getType());
     }
-
-
-
-
-
-
-
-
-
-
 }
 
 
