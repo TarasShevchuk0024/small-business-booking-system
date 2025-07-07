@@ -12,6 +12,7 @@ import java.time.Instant;
 public class Service {
     private String id;
     private String serviceName;
+    private String description;
     private int duration;
     private Double price;
     private Instant createdAt;

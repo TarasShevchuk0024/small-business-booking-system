@@ -1,8 +1,7 @@
 package com.system.SmallBusinessBookingSystem.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.List;
@@ -10,6 +9,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "services")
 public class ServiceEntity {
@@ -20,6 +22,9 @@ public class ServiceEntity {
 
     @Column(name = "service_name")
     private String serviceName;
+
+    @Column
+    private String description;
 
     @Column
     private int duration;
