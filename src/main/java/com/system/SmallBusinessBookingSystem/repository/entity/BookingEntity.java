@@ -1,30 +1,30 @@
 package com.system.SmallBusinessBookingSystem.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "notifications")
-public class NotificationsEntity {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "bookings")
+public class BookingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
-    private String message;
-
-    @Column(name = "sent_at")
-    private Instant sentAt;
+    @Column(name = "date_time")
+    private Instant dateTime;
 
     @Column
-    private String type;
+    private String status;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -33,10 +33,13 @@ public class NotificationsEntity {
     private Instant updatedAt;
 
     @ManyToOne
+    @JoinColumn(name = "service_id")
+    private ServiceEntity service;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private BookingsEntity booking;
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<NotificationEntity> notifications;
 }

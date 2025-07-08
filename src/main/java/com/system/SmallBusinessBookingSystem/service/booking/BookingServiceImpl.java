@@ -6,11 +6,14 @@ import com.system.SmallBusinessBookingSystem.mapper.BookingMapper;
 import com.system.SmallBusinessBookingSystem.repository.BookingRepository;
 import com.system.SmallBusinessBookingSystem.repository.ServiceRepository;
 import com.system.SmallBusinessBookingSystem.repository.UserRepository;
-import com.system.SmallBusinessBookingSystem.repository.entity.BookingsEntity;
+import com.system.SmallBusinessBookingSystem.repository.entity.BookingEntity;
 import com.system.SmallBusinessBookingSystem.repository.entity.ServiceEntity;
 import com.system.SmallBusinessBookingSystem.repository.entity.UserEntity;
 import com.system.SmallBusinessBookingSystem.service.models.Booking;
 import com.system.SmallBusinessBookingSystem.service.models.BookingStatus;
+import com.system.SmallBusinessBookingSystem.service.models.Notification;
+import com.system.SmallBusinessBookingSystem.service.models.NotificationType;
+import com.system.SmallBusinessBookingSystem.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class BookingServiceImpl implements BookingService {
     private final ServiceRepository serviceRepository;
     private final UserRepository userRepository;
     private final BookingMapper bookingMapper;
+    private final NotificationService notificationService;
 
     @Override
     public void createBooking(Booking booking) {
@@ -48,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setCreatedAt(Instant.now());
         booking.setUpdatedAt(Instant.now());
 
-        BookingsEntity entity = bookingMapper.toBookingsEntity(booking);
+        BookingEntity entity = bookingMapper.toBookingsEntity(booking);
         entity.setService(service);
         entity.setUser(user);
 
@@ -69,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking getBookingById(String id) {
         UUID bookingId = UUID.fromString(id);
 
-        BookingsEntity entity = bookingRepository.findById(bookingId)
+        BookingEntity entity = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Booking with id " + id + " not found"));
 
         return bookingMapper.toBooking(entity);
@@ -79,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
     public void updateBookingStatus(String id, BookingStatus status) {
         UUID bookingId = UUID.fromString(id);
 
-        BookingsEntity entity = bookingRepository.findById(bookingId)
+        BookingEntity entity = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Booking with id " + id + " not found"));
 
         entity.setStatus(status.name());
@@ -91,11 +95,29 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void acceptBooking(String id) {
         updateBookingStatus(id, BookingStatus.CONFIRMED);
+        Booking booking = getBookingById(id);
+
+        Notification notification = Notification.builder()
+                .message("Your booking has been confirmed!")
+                .sentAt(Instant.now())
+                .type(NotificationType.EMAIL.name())
+                .build();
+
+        notificationService.sendNotification(notification, booking.getUserId(), booking.getId());
     }
 
     @Override
     public void cancelBooking(String id) {
         updateBookingStatus(id, BookingStatus.CANCELLED);
+        Booking booking = getBookingById(id);
+
+        Notification notification = Notification.builder()
+                .message("Your booking has been cancelled.")
+                .sentAt(Instant.now())
+                .type(NotificationType.EMAIL.name())
+                .build();
+
+        notificationService.sendNotification(notification, booking.getUserId(), booking.getId());
     }
 
     @Override
@@ -108,4 +130,6 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.deleteById(bookingId);
     }
+
+
 }

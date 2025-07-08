@@ -43,5 +43,5 @@ public class ServiceEntity {
     private BusinessEntity business;
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
-    private List<BookingsEntity> bookings;
+    private List<BookingEntity> bookings;
 }

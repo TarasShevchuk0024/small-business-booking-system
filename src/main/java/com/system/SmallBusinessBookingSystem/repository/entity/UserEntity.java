@@ -51,10 +51,10 @@ public class UserEntity {
     private List<BusinessEntity> businesses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<BookingsEntity> bookings;
+    private List<BookingEntity> bookings;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<NotificationsEntity> notifications;
+    private List<NotificationEntity> notifications;
 
     @Column
     private UUID token;

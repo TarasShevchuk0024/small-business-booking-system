@@ -1,6 +1,7 @@
 package com.system.SmallBusinessBookingSystem.controller;
 
 
+import com.system.SmallBusinessBookingSystem.exception.NotificationAlreadyExistsException;
 import com.system.SmallBusinessBookingSystem.exception.UserIsBlockedException;
 import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -21,4 +22,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(NotificationAlreadyExistsException.class)
+    public ResponseEntity<String> handleNotificationAlreadyExists(NotificationAlreadyExistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
 }

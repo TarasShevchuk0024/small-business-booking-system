@@ -3,7 +3,7 @@ package com.system.SmallBusinessBookingSystem.mapper;
 import com.system.SmallBusinessBookingSystem.controller.dto.BookingCreateDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.BookingDetailsDto;
 import com.system.SmallBusinessBookingSystem.controller.dto.BookingUpdateDto;
-import com.system.SmallBusinessBookingSystem.repository.entity.BookingsEntity;
+import com.system.SmallBusinessBookingSystem.repository.entity.BookingEntity;
 import com.system.SmallBusinessBookingSystem.service.models.Booking;
 import com.system.SmallBusinessBookingSystem.service.models.BookingStatus;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public Booking toBooking(BookingsEntity entity) {
+    public Booking toBooking(BookingEntity entity) {
         return Booking.builder()
                 .id(entity.getId().toString())
                 .userId(entity.getUser().getId().toString())
@@ -44,8 +44,8 @@ public class BookingMapper {
                 .build();
     }
 
-    public BookingsEntity toBookingsEntity(Booking booking) {
-        BookingsEntity entity = new BookingsEntity();
+    public BookingEntity toBookingsEntity(Booking booking) {
+        BookingEntity entity = new BookingEntity();
         if (booking.getId() != null) {
             entity.setId(UUID.fromString(booking.getId()));
         }
