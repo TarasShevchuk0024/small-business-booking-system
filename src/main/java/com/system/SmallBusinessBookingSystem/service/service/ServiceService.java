@@ -15,4 +15,3 @@ public interface ServiceService {
 
     void deleteService(String id, String businessId);
 }
-

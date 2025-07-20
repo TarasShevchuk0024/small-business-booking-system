@@ -22,6 +22,3 @@ INSERT INTO users (
              'ROLE_USER',
              'ACTIVE'
 );
-
-
-

@@ -89,5 +89,4 @@ public class TokenServiceImpl implements TokenService {
 
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
-
 }

@@ -46,5 +46,3 @@ class UserMapperTest {
         assertEquals(user.getType().name(), result.getType());
     }
 }
-
-

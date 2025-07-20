@@ -13,5 +13,8 @@ public interface ServiceRepository extends JpaRepository<ServiceEntity, UUID> {
     Optional<ServiceEntity> findByIdAndBusinessId(UUID serviceId, UUID businessId);
 
     List<ServiceEntity> findByBusinessId(UUID businessId);
-}
 
+    boolean existsByServiceNameIgnoreCaseAndBusinessId(String serviceName, UUID businessId);
+
+    Optional<ServiceEntity> findByServiceNameIgnoreCaseAndBusinessId(String serviceName, UUID businessId);
+}

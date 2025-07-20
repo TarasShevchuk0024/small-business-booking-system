@@ -14,8 +14,3 @@ public class HealthController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
-
-
-
-
-

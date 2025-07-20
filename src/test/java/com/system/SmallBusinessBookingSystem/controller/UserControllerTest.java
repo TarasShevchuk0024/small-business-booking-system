@@ -41,6 +41,4 @@ class UserControllerTest {
         verify(userMapper).toUser(userRegistrationDto);
         verify(userService).createUser(user);
     }
-
 }
-

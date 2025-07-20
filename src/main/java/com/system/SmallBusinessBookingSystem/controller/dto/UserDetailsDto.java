@@ -21,5 +21,3 @@ public class UserDetailsDto {
     private final Instant createdAt;
     private final Instant updatedAt;
 }
-
-

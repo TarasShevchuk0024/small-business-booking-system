@@ -14,4 +14,9 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, UUID> 
     List<BusinessEntity> findByUserId(UUID userId);
 
     Optional<BusinessEntity> findByIdAndUserId(UUID businessId, UUID userId);
+
+    boolean existsByBusinessNameIgnoreCase(String businessName);
+
+    Optional<BusinessEntity> findByBusinessNameIgnoreCase(String businessName);
+
 }

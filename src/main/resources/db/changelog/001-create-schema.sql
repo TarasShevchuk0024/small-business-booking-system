@@ -54,5 +54,3 @@ CREATE TABLE "Notifications" (
         "user_id" UUID REFERENCES "Users"("id"),
         "booking_id" UUID REFERENCES "Bookings"("id")
 );
-
-

@@ -23,6 +23,10 @@ databaseChangeLog:
       file: 006-add-default-user.sql
       relativeToChangelogFile: true
 
+  - include:
+      file: 007-add-column-description.sql
+      relativeToChangelogFile: true
 
-
-
+  - include:
+      file: 008-change-price-type.sql
+      relativeToChangelogFile: true

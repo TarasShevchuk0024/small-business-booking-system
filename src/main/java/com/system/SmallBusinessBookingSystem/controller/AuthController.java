@@ -43,5 +43,3 @@ public class AuthController {
         return new ResponseEntity<>(new AuthTokenDto(token), HttpStatus.OK);
     }
 }
-
-
