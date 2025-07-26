@@ -29,12 +29,6 @@ public class SecurityConfig {
 
     private final TokenAuthFilter tokenAuthFilter;
 
-    /*
-     * Custom UserDetailsService bean to disable Spring Boot's default in-memory user.
-     *
-     * <p>By throwing a UsernameNotFoundException for any username, this bean prevents Spring Security
-     * from creating a default user with a generated password during development.
-     */
     @Bean
     UserDetailsService emptyDetailsService() {
         return username -> {
@@ -69,16 +63,14 @@ public class SecurityConfig {
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
-                .cors(
-                        cors ->
-                                cors.configurationSource(
-                                        _ -> {
-                                            CorsConfiguration configuration = new CorsConfiguration();
-                                            configuration.setAllowedOrigins(List.of("*"));
-                                            configuration.setAllowedMethods(List.of("*"));
-                                            configuration.setAllowedHeaders(List.of("*"));
-                                            return configuration;
-                                        }))
+                .cors(cors -> cors.configurationSource(_ -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setAllowCredentials(true);
+                    return configuration;
+                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(
