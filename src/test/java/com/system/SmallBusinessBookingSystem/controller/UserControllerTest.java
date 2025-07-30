@@ -4,7 +4,6 @@ import com.system.SmallBusinessBookingSystem.controller.dto.UserRegistrationDto;
 import com.system.SmallBusinessBookingSystem.mapper.UserMapper;
 import com.system.SmallBusinessBookingSystem.service.models.User;
 import com.system.SmallBusinessBookingSystem.service.user.UserService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
@@ -31,8 +31,8 @@ class UserControllerTest {
         UserRegistrationDto userRegistrationDto = mock(UserRegistrationDto.class);
         User user = mock(User.class);
 
-        // when
-        when(userMapper.toUser(userRegistrationDto)).thenReturn(user);
+        // stubbing
+        doReturn(user).when(userMapper).toUser(userRegistrationDto);
 
         // when
         userController.createUser(userRegistrationDto);
