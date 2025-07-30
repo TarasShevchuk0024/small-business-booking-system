@@ -9,3 +9,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: small_business_booking_system
+
+  mail:
+    image: jcalonso/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+# раптом пише, що порт зайнятий - виконайте команду
+# sudo kill $(lsof -t -i tcp:5432)

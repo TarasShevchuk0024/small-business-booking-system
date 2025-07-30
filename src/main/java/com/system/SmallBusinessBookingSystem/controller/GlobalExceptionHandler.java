@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Void> handleUserNotFoundException(UserNotFoundException e) {
+    public ResponseEntity<Void> handleUserNotFoundException(UserNotFoundException ignoredException) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserIsBlockedException.class)
-    public ResponseEntity<Void> handleUserIsBlockedException(UserIsBlockedException e) {
+    public ResponseEntity<Void> handleUserIsBlockedException(UserIsBlockedException ignoredException) {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 

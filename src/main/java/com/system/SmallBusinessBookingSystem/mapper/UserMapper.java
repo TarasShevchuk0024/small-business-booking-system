@@ -55,7 +55,7 @@ public class UserMapper {
 
     public User toUser(UserEntity userEntity) {
         return User.builder()
-                .id(userEntity.getId().toString())
+                .id(userEntity.getId())
                 .firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())
                 .email(userEntity.getEmail())
@@ -70,7 +70,7 @@ public class UserMapper {
 
     public UserEntity toUserEntity(User user) {
         return UserEntity.builder()
-                .id(user.getId() != null ? UUID.fromString(user.getId()) : null)
+                .id(user.getId() != null ? user.getId() : null)
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())

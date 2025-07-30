@@ -55,7 +55,7 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public List<Business> getBusinessesForCurrentUser() {
         User user = userService.getAuthenticatedUser();
-        UUID userId = UUID.fromString(user.getId());
+        UUID userId = UUID.fromString(user.getId().toString());
 
         return businessRepository.findByUserId(userId)
                 .stream()
@@ -75,7 +75,7 @@ public class BusinessServiceImpl implements BusinessService {
     public void updateBusiness(Business business) {
         User user = userService.getAuthenticatedUser();
         UUID businessId = UUID.fromString(business.getId());
-        UUID userId = UUID.fromString(user.getId());
+        UUID userId = UUID.fromString(user.getId().toString());
 
         BusinessEntity entity = businessRepository
                 .findByIdAndUserId(businessId, userId)
@@ -92,7 +92,7 @@ public class BusinessServiceImpl implements BusinessService {
     public void deleteBusiness(String id) {
         User user = userService.getAuthenticatedUser();
         UUID businessId = UUID.fromString(id);
-        UUID userId = UUID.fromString(user.getId());
+        UUID userId = UUID.fromString(user.getId().toString());
 
         BusinessEntity entity = businessRepository
                 .findByIdAndUserId(businessId, userId)

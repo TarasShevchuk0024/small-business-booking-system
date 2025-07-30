@@ -105,7 +105,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(User user) {
         log.info("Updating user with id: {}", user.getId());
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(UUID.fromString(user.getId()));
+        Optional<UserEntity> optionalUserEntity =
+                userRepository.findById(user.getId());
         if (optionalUserEntity.isPresent()) {
             UserEntity userEntity = optionalUserEntity.get();
 

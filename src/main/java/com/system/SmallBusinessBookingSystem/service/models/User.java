@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @ToString
 public class User {
-    private String id;
+    private UUID id;
     private String firstName;
     private String lastName;
     private String email;

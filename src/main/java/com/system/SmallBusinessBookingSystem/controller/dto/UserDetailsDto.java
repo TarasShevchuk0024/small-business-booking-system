@@ -6,12 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserDetailsDto {
-    private final String id;
+    private final UUID id;
     private final String firstName;
     private final String lastName;
     private final String email;

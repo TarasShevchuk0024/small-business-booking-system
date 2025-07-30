@@ -58,4 +58,21 @@ public class UserEntity {
 
     @Column
     private UUID token;
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", token=" + token +
+                '}';
+    }
 }

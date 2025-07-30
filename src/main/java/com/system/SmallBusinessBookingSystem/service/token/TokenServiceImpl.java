@@ -34,7 +34,7 @@ public class TokenServiceImpl implements TokenService {
         Claims claims = Jwts.claims()
                 .issuedAt(now)
                 .expiration(expiration)
-                .subject(user.getId())
+                .subject(user.getId().toString())
                 .add(CLAIM_ROLE, user.getType().toString())
                 .build();
 

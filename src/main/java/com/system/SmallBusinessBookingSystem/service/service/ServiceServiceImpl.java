@@ -32,7 +32,7 @@ public class ServiceServiceImpl implements ServiceService {
 
         User user = userService.getAuthenticatedUser();
         UUID bId = UUID.fromString(businessId);
-        UUID uId = UUID.fromString(user.getId());
+        UUID uId = UUID.fromString(user.getId().toString());
 
         BusinessEntity businessEntity = businessRepository.findByIdAndUserId(bId, uId)
                 .orElseThrow(() -> new BusinessNotFoundException("Business not found or access denied"));

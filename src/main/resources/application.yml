@@ -11,19 +11,10 @@ spring:
 
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${GMAIL_USERNAME:d159e3de-7f5b-4244-b989-0b34264c564a}
-    password: ${GMAIL_PASSWORD:7b2d3eea-0143-4ab1-b1d4-5a4f213d4692}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-          ssl:
-            trust: smtp.gmail.com
+    host: 127.0.0.1
+    port: 1025
+    username:
+    password:
 
 jwt:
   secret: ${JWT_SECRET:44af14bd-b032-40e1-9af8-0e5a0769fe2a}
