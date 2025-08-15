@@ -98,11 +98,9 @@ public class BookingController {
         try {
             newStatus = BookingStatus.valueOf(dto.getStatus());
         } catch (IllegalArgumentException ex) {
-            // передали щось відмінне від PENDING/CONFIRMED/CANCELLED
             return ResponseEntity.badRequest().build();
         }
 
-        // важливо: ці методи вже шлють email через Notification/EmailService
         if (newStatus == BookingStatus.CONFIRMED) {
             bookingService.acceptBooking(id);
         } else if (newStatus == BookingStatus.CANCELLED) {

@@ -89,5 +89,4 @@ class BusinessControllerTest {
         verify(businessService).updateBusiness(business);
         assertEquals(200, response.getStatusCode().value());
     }
-
 }

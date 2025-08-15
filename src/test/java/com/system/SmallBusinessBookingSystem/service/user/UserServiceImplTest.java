@@ -28,7 +28,6 @@ class UserServiceImplTest {
     EmailService emailService;
 
     @SuppressWarnings("unused")
-    // This is a mock for PasswordEncoder, which is not used in this test but might be used in other methods.
     @Mock
     PasswordEncoder passwordEncoder;
 
@@ -50,23 +49,11 @@ class UserServiceImplTest {
 
         // then
         verify(user).setStatus(UserStatus.PENDING);
-        // Since Instant.now() is a static method, we cannot verify it directly.
-        // Instead, we can verify that the method was called, but we won't check the exact value.
         verify(user).setCreatedAt(any());
-        // Since UUID.randomUUID() is a static method, we cannot verify it directly.
-        // Instead, we can verify that the method was called, but we won't check the exact value.
         verify(user).setToken(any());
 
         verify(userMapper).toUserEntity(user);
         verify(userRepository).save(userEntity);
-        // Verify that the emailService.sendEmail method was called with the user's email, a subject, and a body.
-        // We use eq() for the email and any() for the subject and body since we don't care about their exact values in this test.
-        // The eq() method is used to match the exact value of the email, while any() allows any value for the subject and body.
         verify(emailService).sendEmail(eq(user.getEmail()), any(), any());
-
-        // Rule of Thumb:
-        // If you're using only real values or mocks, no need for eq().
-        // If you're using any matchers (any(), argThat(), etc.), wrap all other arguments with eq() too.
     }
-
 }

@@ -63,5 +63,4 @@ class UserRepositoryIT {
         assertEquals(user.getUpdatedAt(), savedUser.getUpdatedAt());
         assertEquals(user.getToken(), savedUser.getToken());
     }
-
 }

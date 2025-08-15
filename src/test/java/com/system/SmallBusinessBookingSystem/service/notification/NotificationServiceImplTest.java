@@ -1,6 +1,5 @@
 package com.system.SmallBusinessBookingSystem.service.notification;
 
-import com.system.SmallBusinessBookingSystem.exception.NotificationAlreadyExistsException;
 import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
 import com.system.SmallBusinessBookingSystem.mapper.NotificationMapper;
 import com.system.SmallBusinessBookingSystem.repository.BookingRepository;
@@ -21,7 +20,8 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +46,7 @@ class NotificationServiceImplTest {
     private NotificationServiceImpl notificationService;
 
     @Test
-    void shouldSendEmailNotification() {
+    void shouldSendEmailNotification_whenTypeEmail() {
         // given
         String userId = UUID.randomUUID().toString();
         String bookingId = UUID.randomUUID().toString();
@@ -62,7 +62,6 @@ class NotificationServiceImplTest {
         NotificationEntity entity = mock(NotificationEntity.class);
 
         // when
-        when(notificationRepository.findByUserIdAndBookingId(any(), any())).thenReturn(Optional.empty());
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
         when(notificationMapper.toEntity(notification)).thenReturn(entity);
@@ -73,24 +72,36 @@ class NotificationServiceImplTest {
         verify(notificationRepository).save(entity);
         verify(entity).setUser(user);
         verify(entity).setBooking(booking);
-        verify(emailService).sendEmail(eq("test@mail.com"), any(), eq("Email Test"));
+        verify(emailService).sendEmail(eq("test@mail.com"), eq("Notification"), eq("Email Test"));
     }
 
     @Test
-    void shouldThrowWhenNotificationAlreadyExists() {
+    void shouldSaveNotificationWithoutBooking_whenBookingNotFound_andNotSendEmailForNonEmailType() {
         // given
         String userId = UUID.randomUUID().toString();
         String bookingId = UUID.randomUUID().toString();
-        Notification notification = Notification.builder().message("Duplicate").build();
+
+        Notification notification = Notification.builder()
+                .message("No email")
+                .type("SMS") // будь-що, не EMAIL
+                .sentAt(Instant.now())
+                .build();
+
+        UserEntity user = UserEntity.builder().email("user@mail.com").build();
+        NotificationEntity entity = mock(NotificationEntity.class);
 
         // when
-        when(notificationRepository.findByUserIdAndBookingId(any(), any())).thenReturn(Optional.of(new NotificationEntity()));
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(bookingRepository.findById(any())).thenReturn(Optional.empty()); // booking = null
+        when(notificationMapper.toEntity(notification)).thenReturn(entity);
+
+        notificationService.sendNotification(notification, userId, bookingId);
 
         // then
-        try {
-            notificationService.sendNotification(notification, userId, bookingId);
-            fail("Expected NotificationAlreadyExistsException");
-        } catch (NotificationAlreadyExistsException ignored) {}
+        verify(notificationRepository).save(entity);
+        verify(entity).setUser(user);
+        verify(entity).setBooking(isNull()); // booking=null
+        verify(emailService, never()).sendEmail(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -98,16 +109,20 @@ class NotificationServiceImplTest {
         // given
         String userId = UUID.randomUUID().toString();
         String bookingId = UUID.randomUUID().toString();
-        Notification notification = Notification.builder().message("NoUser").build();
+
+        Notification notification = Notification.builder()
+                .message("NoUser")
+                .type("EMAIL")
+                .build();
 
         // when
-        when(notificationRepository.findByUserIdAndBookingId(any(), any())).thenReturn(Optional.empty());
         when(userRepository.findById(any())).thenReturn(Optional.empty());
 
         // then
-        try {
-            notificationService.sendNotification(notification, userId, bookingId);
-            fail("Expected UserNotFoundException");
-        } catch (UserNotFoundException ignored) {}
+        assertThrows(UserNotFoundException.class,
+                () -> notificationService.sendNotification(notification, userId, bookingId));
+
+        verify(notificationRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(anyString(), anyString(), anyString());
     }
 }

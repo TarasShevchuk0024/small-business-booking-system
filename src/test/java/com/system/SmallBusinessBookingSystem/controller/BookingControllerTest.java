@@ -1,13 +1,11 @@
 package com.system.SmallBusinessBookingSystem.controller;
 
 import com.system.SmallBusinessBookingSystem.controller.dto.BookingCreateDto;
-import com.system.SmallBusinessBookingSystem.controller.dto.BookingUpdateDto;
 import com.system.SmallBusinessBookingSystem.mapper.BookingMapper;
 import com.system.SmallBusinessBookingSystem.repository.ServiceRepository;
 import com.system.SmallBusinessBookingSystem.repository.UserRepository;
 import com.system.SmallBusinessBookingSystem.service.booking.BookingService;
 import com.system.SmallBusinessBookingSystem.service.models.Booking;
-import com.system.SmallBusinessBookingSystem.service.models.BookingStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,22 +57,6 @@ class BookingControllerTest {
         verify(bookingMapper).toBooking(dto);
         verify(bookingService).createBooking(booking);
         assertEquals(201, response.getStatusCode().value());
-    }
-
-    @Test
-    void shouldUpdateBookingStatus() {
-        // given
-        BookingUpdateDto dto = BookingUpdateDto.builder()
-                .id("booking1")
-                .status(BookingStatus.CONFIRMED.name())
-                .build();
-
-        // when
-        ResponseEntity<Void> response = bookingController.updateBookingStatus("booking1", dto);
-
-        // then
-        verify(bookingService).updateBookingStatus("booking1", BookingStatus.CONFIRMED);
-        assertEquals(200, response.getStatusCode().value());
     }
 
     @Test

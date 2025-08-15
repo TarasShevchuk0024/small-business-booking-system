@@ -22,7 +22,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+        import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
@@ -51,7 +52,7 @@ class BookingServiceImplTest {
         Booking booking = Booking.builder()
                 .userId(UUID.randomUUID().toString())
                 .serviceId(UUID.randomUUID().toString())
-                .dateTime(Instant.now())
+                .dateTime(Instant.parse("2025-01-01T00:00:00Z"))
                 .build();
 
         ServiceEntity service = new ServiceEntity();
@@ -61,6 +62,7 @@ class BookingServiceImplTest {
         // when
         when(serviceRepository.findById(any())).thenReturn(Optional.of(service));
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(bookingRepository.existsByServiceIdAndDateTime(any(), any())).thenReturn(false);
         when(bookingMapper.toBookingsEntity(booking)).thenReturn(entity);
 
         bookingService.createBooking(booking);
@@ -80,42 +82,53 @@ class BookingServiceImplTest {
         // when
         when(bookingRepository.findById(any())).thenReturn(Optional.of(entity));
 
-        // then
         bookingService.updateBookingStatus(id, BookingStatus.CONFIRMED);
 
+        // then
         assertEquals(BookingStatus.CONFIRMED.name(), entity.getStatus());
         verify(bookingRepository).save(entity);
     }
 
     @Test
     void shouldDeleteBooking() {
-        // when
+        // given
         UUID id = UUID.randomUUID();
-        when(bookingRepository.existsById(id)).thenReturn(true);
+        BookingEntity entity = new BookingEntity();
+
+        // when
+        when(bookingRepository.findById(id)).thenReturn(Optional.of(entity));
 
         // then
         bookingService.deleteBooking(id.toString());
 
-        verify(bookingRepository).deleteById(id);
+        verify(bookingRepository).delete(entity);
+        verify(bookingRepository, never()).deleteById(any());
     }
 
     @Test
     void shouldSendNotificationOnAccept() {
         // given
-        String id = UUID.randomUUID().toString();
+        String bookingId = UUID.randomUUID().toString();
+
+        BookingEntity foundEntity = new BookingEntity();
+
+        when(bookingRepository.findById(any())).thenReturn(Optional.of(foundEntity));
+
         Booking booking = Booking.builder()
-                .id(id)
+                .id(bookingId)
                 .userId(UUID.randomUUID().toString())
                 .serviceId(UUID.randomUUID().toString())
                 .build();
 
+        // getBookingById(id) всередині сервісу робить mapper.toBooking(entity)
+        when(bookingMapper.toBooking(foundEntity)).thenReturn(booking);
+
         // when
-        when(bookingRepository.findById(any())).thenReturn(Optional.of(new BookingEntity()));
-        when(bookingService.getBookingById(id)).thenReturn(booking); // використовуємо spy/partial stub
+        bookingService.acceptBooking(bookingId);
 
         // then
-        bookingService.acceptBooking(id);
-
         verify(notificationService).sendNotification(any(Notification.class), eq(booking.getUserId()), eq(booking.getId()));
+        verify(bookingRepository, atLeast(2)).findById(any());
+        verify(bookingRepository, atLeastOnce()).save(any(BookingEntity.class));
     }
 }

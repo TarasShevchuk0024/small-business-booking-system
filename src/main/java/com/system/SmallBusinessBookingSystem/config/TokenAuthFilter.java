@@ -46,7 +46,6 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         String jwt = getJwtFromRequest(request);
 
         if (!StringUtils.hasText(jwt) || !tokenService.isValidToken(jwt)) {
-            // Skip authentication due to invalid JWT.
             filterChain.doFilter(request, response);
             return;
         }

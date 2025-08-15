@@ -129,7 +129,6 @@ public class BookingServiceImpl implements BookingService {
         BookingEntity entity = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Booking with id " + id + " not found"));
 
-        // Видаляємо саме сутність, щоб JPA спрацював каскадом і orphanRemoval
         bookingRepository.delete(entity);
         log.info("Booking {} deleted", bookingId);
     }

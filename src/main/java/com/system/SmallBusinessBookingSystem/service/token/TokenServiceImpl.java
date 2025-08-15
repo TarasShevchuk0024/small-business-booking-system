@@ -26,7 +26,6 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String createToken(User user) {
 
-        // Calculate the expiration date based on the current time and expiration time in milliseconds
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtTtlMillis);
 
@@ -39,7 +38,6 @@ public class TokenServiceImpl implements TokenService {
                 .build();
 
 
-        // Create and sign the JWT token
         return Jwts.builder()
                 .claims(claims)
                 .signWith(getSecretKey())

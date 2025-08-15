@@ -36,5 +36,4 @@ public class EmailServiceImplTest {
         // Verify that the mailSender.send method was called with a SimpleMailMessage object.
         mailSender.send(any(SimpleMailMessage.class));
     }
-
 }
