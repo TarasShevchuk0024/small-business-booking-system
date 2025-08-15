@@ -1,5 +1,6 @@
 package com.system.SmallBusinessBookingSystem.service.user;
 
+import com.system.SmallBusinessBookingSystem.exception.PasswordIncorrectException;
 import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
 import com.system.SmallBusinessBookingSystem.mapper.UserMapper;
 import com.system.SmallBusinessBookingSystem.repository.UserRepository;
@@ -116,6 +117,8 @@ public class UserServiceImpl implements UserService {
             userEntity.setPhoneNumber(user.getPhoneNumber());
             userEntity.setType(user.getType().name());
             userEntity.setStatus(user.getStatus().name());
+            userEntity.setUpdatedAt(Instant.now());
+
 
             userRepository.save(userEntity);
         } else {
@@ -157,5 +160,68 @@ public class UserServiceImpl implements UserService {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return getUser(userId);
+    }
+
+    @Override
+    public void changeOwnPassword(String oldPassword, String newPassword) {
+        User current = getAuthenticatedUser();
+
+        var entity = userRepository.findById(current.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, entity.getPassword())) {
+            throw new PasswordIncorrectException("Old password is incorrect");
+        }
+
+        entity.setPassword(passwordEncoder.encode(newPassword));
+        entity.setUpdatedAt(Instant.now());
+        userRepository.save(entity);
+    }
+
+    @Override
+    public void requestPasswordReset(String email) {
+        // Не розкриваємо, чи існує емейл (анти-Enumeration), але якщо є — шлемо листа.
+        userRepository.findByEmailIgnoreCase(email).ifPresent(entity -> {
+            UUID token = UUID.randomUUID();
+            entity.setToken(token);
+            entity.setUpdatedAt(Instant.now());
+            userRepository.save(entity);
+
+            emailService.sendEmail(
+                    email,
+                    "Password reset",
+                    "Click the link to reset your password:\n"
+                            + frontendBaseUrl
+                            + "/users/password-reset?token=" + token
+            );
+        });
+    }
+
+    @Override
+    public User verifyPasswordResetToken(String token) {
+        return userRepository.findByToken(UUID.fromString(token))
+                .map(userMapper::toUser)
+                .orElseThrow(() -> new UserNotFoundException("Reset token not found"));
+    }
+
+    @Override
+    public void completePasswordReset(String token, String newPassword) {
+        var entity = userRepository.findByToken(UUID.fromString(token))
+                .orElseThrow(() -> new UserNotFoundException("Reset token not found"));
+
+        entity.setPassword(passwordEncoder.encode(newPassword));
+        entity.setToken(null); // інвалідовуємо токен
+        entity.setUpdatedAt(Instant.now());
+        userRepository.save(entity);
+    }
+
+    @Override
+    public void adminSetPassword(String targetUserId, String newPassword) {
+        var entity = userRepository.findById(UUID.fromString(targetUserId))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        entity.setPassword(passwordEncoder.encode(newPassword));
+        entity.setUpdatedAt(Instant.now());
+        userRepository.save(entity);
     }
 }
