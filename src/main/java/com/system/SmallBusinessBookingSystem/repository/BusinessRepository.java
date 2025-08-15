@@ -18,5 +18,4 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, UUID> 
     boolean existsByBusinessNameIgnoreCase(String businessName);
 
     Optional<BusinessEntity> findByBusinessNameIgnoreCase(String businessName);
-
 }

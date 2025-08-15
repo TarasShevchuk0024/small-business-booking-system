@@ -29,21 +29,17 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDetailsDto>> getUsers() {
-
         List<UserDetailsDto> userDetailsDtoList = userService.getAllUsers()
                 .stream()
                 .map(userMapper::toUserDetailsDto)
                 .toList();
-
         return new ResponseEntity<>(userDetailsDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDetailsDto> getUsers(@PathVariable String id) {
-
         User user = userService.getUser(id);
         UserDetailsDto userDetailsDto = userMapper.toUserDetailsDto(user);
-
         return new ResponseEntity<>(userDetailsDto, HttpStatus.OK);
     }
 
@@ -56,23 +52,23 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
-
         User authenticatedUser = userService.getAuthenticatedUser();
-
         if (authenticatedUser.getType() == ROLE_ADMIN ||
                 authenticatedUser.getId().equals(userUpdateDto.getId())) {
             userService.updateUser(userMapper.toUser(userUpdateDto));
             return new ResponseEntity<>(HttpStatus.OK);
         }
-
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping("/{id}")
     @Secured(UserType.UserTypeConstants.ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        User current = userService.getAuthenticatedUser();
+        if (current.getId().toString().equals(id)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

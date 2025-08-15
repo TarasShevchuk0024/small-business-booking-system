@@ -1,6 +1,5 @@
 package com.system.SmallBusinessBookingSystem.service.notification;
 
-import com.system.SmallBusinessBookingSystem.exception.NotificationAlreadyExistsException;
 import com.system.SmallBusinessBookingSystem.exception.UserNotFoundException;
 import com.system.SmallBusinessBookingSystem.mapper.NotificationMapper;
 import com.system.SmallBusinessBookingSystem.repository.BookingRepository;
@@ -35,10 +34,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         UUID userUUID = UUID.fromString(userId);
         UUID bookingUUID = UUID.fromString(bookingId);
-
-        if (notificationRepository.findByUserIdAndBookingId(userUUID, bookingUUID).isPresent()) {
-            throw new NotificationAlreadyExistsException("Notification already exists for this user and booking");
-        }
 
         UserEntity user = userRepository.findById(userUUID)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

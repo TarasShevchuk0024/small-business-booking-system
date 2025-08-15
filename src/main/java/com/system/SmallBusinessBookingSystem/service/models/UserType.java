@@ -12,10 +12,6 @@ public enum UserType {
 
     private final String value;
 
-    /**
-     * Гнучкий метод для створення UserType з будь-якого формату рядка:
-     * "USER", "ROLE_USER", "role_admin", тощо.
-     */
     public static UserType fromValue(String input) {
         if (input == null || input.isBlank()) {
             throw new IllegalArgumentException("UserType value is null or empty");
@@ -23,7 +19,6 @@ public enum UserType {
 
         String normalized = input.toUpperCase();
 
-        // Якщо передали просто "USER" → додаємо "ROLE_"
         if (!normalized.startsWith("ROLE_")) {
             normalized = "ROLE_" + normalized;
         }

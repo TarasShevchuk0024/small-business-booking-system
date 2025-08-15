@@ -2,23 +2,26 @@ spring:
   application:
     name: small_business_booking_system
 
-
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:5432}/${DATABASE_NAME:small_business_booking_system}
     username: ${DATABASE_USER:postgres}
     password: ${DATABASE_PASSWORD:postgres_password}
     driver-class-name: org.postgresql.Driver
 
-
   mail:
     host: 127.0.0.1
     port: 1025
-    username:
-    password:
+    # username / password не потрібні для MailHog/MailDev
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
 
 jwt:
   secret: ${JWT_SECRET:44af14bd-b032-40e1-9af8-0e5a0769fe2a}
-  ttl-millis: 43200000 # 12 hours
+  ttl-millis: 43200000
 
 frontend:
   base-url: ${FRONTEND_BASE_URL:http://localhost:3000}

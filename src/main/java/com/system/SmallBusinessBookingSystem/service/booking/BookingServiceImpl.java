@@ -17,6 +17,7 @@ import com.system.SmallBusinessBookingSystem.service.notification.NotificationSe
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -121,13 +122,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public void deleteBooking(String id) {
         UUID bookingId = UUID.fromString(id);
 
-        if (!bookingRepository.existsById(bookingId)) {
-            throw new BookingNotFoundException("Booking with id " + id + " not found");
-        }
+        BookingEntity entity = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new BookingNotFoundException("Booking with id " + id + " not found"));
 
-        bookingRepository.deleteById(bookingId);
+        // Видаляємо саме сутність, щоб JPA спрацював каскадом і orphanRemoval
+        bookingRepository.delete(entity);
+        log.info("Booking {} deleted", bookingId);
     }
 }

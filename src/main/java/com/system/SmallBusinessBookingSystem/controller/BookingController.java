@@ -90,9 +90,30 @@ public class BookingController {
             @PathVariable String id,
             @RequestBody BookingUpdateDto dto
     ) {
-        bookingService.updateBookingStatus(id, BookingStatus.valueOf(dto.getStatus()));
+        if (dto == null || dto.getStatus() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final BookingStatus newStatus;
+        try {
+            newStatus = BookingStatus.valueOf(dto.getStatus());
+        } catch (IllegalArgumentException ex) {
+            // передали щось відмінне від PENDING/CONFIRMED/CANCELLED
+            return ResponseEntity.badRequest().build();
+        }
+
+        // важливо: ці методи вже шлють email через Notification/EmailService
+        if (newStatus == BookingStatus.CONFIRMED) {
+            bookingService.acceptBooking(id);
+        } else if (newStatus == BookingStatus.CANCELLED) {
+            bookingService.cancelBooking(id);
+        } else {
+            bookingService.updateBookingStatus(id, newStatus);
+        }
+
         return ResponseEntity.ok().build();
     }
+
 
     @PutMapping("/{id}/accept")
     public ResponseEntity<Void> acceptBooking(@PathVariable String id) {
