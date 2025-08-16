@@ -58,7 +58,9 @@ public class SecurityConfig {
                                                 "/users/registration-complete",
                                                 "/users/passwords/reset",
                                                 "/users/passwords/reset-verify**",
-                                                "/users/passwords/reset-complete"
+                                                "/users/passwords/reset-complete",
+                                                "/swagger-ui/*",
+                                                "/v3/api-docs/**"
                                         )
                                         .permitAll()
                                         .anyRequest()
